@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic-Tac-Toe</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+      margin: 0;
+    }
+    h1 {
+      margin-bottom: 20px;
+      color: #222;
+    }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 120px);
+      grid-template-rows: repeat(3, 120px);
+      gap: 5px;
+    }
+    .cell {
+      width: 120px;
+      height: 120px;
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 48px;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: background 0.3s;
+    }
+    .cell:hover {
+      background: #f0f0f0;
+    }
+    .winner {
+      margin-top: 20px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #111;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background: #333;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎮 Tic-Tac-Toe</h1>
+  <div class="board" id="board"></div>
+  <div class="winner" id="winner"></div>
+  <button onclick="resetGame()">Restart Game</button>
+
+  <script>
+    const board = document.getElementById("board");
+    const winnerText = document.getElementById("winner");
+    let currentPlayer = "X";
+    let cells = Array(9).fill(null);
+
+    // Create cells
+    for (let i = 0; i < 9; i++) {
+      const cell = document.createElement("div");
+      cell.classList.add("cell");
+      cell.addEventListener("click", () => makeMove(i, cell));
+      board.appendChild(cell);
+    }
+
+    function makeMove(index, cell) {
+      if (!cells[index] && !checkWinner()) {
+        cells[index] = currentPlayer;
+        cell.textContent = currentPlayer;
+        if (checkWinner()) {
+          winnerText.textContent = `🎉 Player ${currentPlayer} Wins!`;
+        } else if (!cells.includes(null)) {
+          winnerText.textContent = "It's a Draw! 🤝";
+        } else {
+          currentPlayer = currentPlayer === "X" ? "O" : "X";
+        }
+      }
+    }
+
+    function checkWinner() {
+      const winPatterns = [
+        [0,1,2], [3,4,5], [6,7,8], // rows
+        [0,3,6], [1,4,7], [2,5,8], // cols
+        [0,4,8], [2,4,6]           // diagonals
+      ];
+      return winPatterns.some(pattern => {
+        const [a, b, c] = pattern;
+        return cells[a] && cells[a] === cells[b] && cells[a] === cells[c];
+      });
+    }
+
+    function resetGame() {
+      cells.fill(null);
+      board.querySelectorAll(".cell").forEach(cell => cell.textContent = "");
+      currentPlayer = "X";
+      winnerText.textContent = "";
+    }
+  </script>
+</body>
+</html>
